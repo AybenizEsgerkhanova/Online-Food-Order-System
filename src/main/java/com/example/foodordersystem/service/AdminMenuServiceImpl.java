@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 public class AdminMenuServiceImpl implements AdminMenuService{
@@ -75,11 +75,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
     }
 @Override
     public List<String> getAllCategories() {
-        List<MenuItem> allItems = menuItemRepository.findAll();
-        return allItems.stream()
-                .map(MenuItem::getCategory)
-                .distinct()
-                .collect(Collectors.toList());
+        return menuItemRepository.findAllCategories();
     }
 @Override
 @Transactional

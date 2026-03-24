@@ -43,4 +43,7 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     List<MenuItem> findByNameContainingIgnoreCase(String searchTerm);
 
     Page<MenuItem> findByCategoryAndAvailable(String category, Boolean available, Pageable pageable);
+
+    @Query("SELECT DISTINCT m.category FROM MenuItem m")
+    List<String> findAllCategories();
 }
