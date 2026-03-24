@@ -2,7 +2,7 @@ package com.example.foodordersystem.controller;
 
 import com.example.foodordersystem.model.dto.request.OrderRequest;
 import com.example.foodordersystem.model.dto.response.OrderResponse;
-import com.example.foodordersystem.service.OrderServiceImpl;
+import com.example.foodordersystem.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,9 +18,9 @@ import java.util.List;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final OrderServiceImpl orderService;
+    private final OrderService orderService;
 
-    public OrderController(OrderServiceImpl orderService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
