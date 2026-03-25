@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -40,7 +41,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse createOrder(OrderRequest orderRequest, String username) {
+    public OrderResponse createOrder(OrderRequest orderRequest, String username, String idempotencyKey) {
+
+        if (idempotencyKey != null) {
+            Optional<Order> existing = orderRepository.findByIdempotencyKey(idempotencyKey);
+            if (existing.isPresent()) {
+                return orderMapper.toResponse(existing.get());
+            }
+        }
+
         if (orderRequest.getOrderItems() == null || orderRequest.getOrderItems().isEmpty()) {
             throw new RuntimeException("Order must contain at least one item");
         }

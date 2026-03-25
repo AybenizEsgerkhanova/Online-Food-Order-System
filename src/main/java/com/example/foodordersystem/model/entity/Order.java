@@ -32,6 +32,9 @@ public class Order {
 
     private BigDecimal totalAmount;
 
+    @Column(unique = true)
+    private String idempotencyKey;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems=new ArrayList<>();
 

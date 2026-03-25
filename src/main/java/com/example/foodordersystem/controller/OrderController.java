@@ -27,10 +27,11 @@ public class OrderController {
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<OrderResponse> createOrder(
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
             @Valid @RequestBody OrderRequest orderRequest,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        OrderResponse order = orderService.createOrder(orderRequest, userDetails.getUsername());
+        OrderResponse order = orderService.createOrder(orderRequest, userDetails.getUsername(), idempotencyKey);
         return ResponseEntity.ok(order);
     }
 
