@@ -4,6 +4,7 @@ import com.example.foodordersystem.model.dto.response.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -232,5 +233,31 @@ public class GlobalExceptionHandler {
 
     private String getRequestPath(WebRequest request) {
         return request.getDescription(false).substring(4); // Remove "uri=" prefix
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(
+            DataIntegrityViolationException ex, WebRequest request) {
+        log.error("Data integrity violation: {}", ex.getMessage());
+
+        String message = "Məlumat artıq mövcuddur";
+
+        if (ex.getMessage() != null) {
+            if (ex.getMessage().contains("username")) {
+                message = "Bu istifadəçi adı artıq mövcuddur";
+            } else if (ex.getMessage().contains("email")) {
+                message = "Bu email artıq mövcuddur";
+            }
+        }
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(message)
+                .errorCode("DUPLICATE_ENTRY")
+                .status(HttpStatus.CONFLICT.value())
+                .path(getRequestPath(request))
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }
