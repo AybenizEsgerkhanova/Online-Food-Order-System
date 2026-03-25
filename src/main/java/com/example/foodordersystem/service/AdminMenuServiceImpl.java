@@ -10,10 +10,12 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
+@Transactional(readOnly = true)
 public class AdminMenuServiceImpl implements AdminMenuService{
 
     private final MenuItemRepository menuItemRepository;
@@ -24,6 +26,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
         this.menuItemMapper = menuItemMapper;
     }
 @Override
+@Transactional
     public MenuItemDTO createMenuItem(@Valid MenuItemRequest request, String username) {
         MenuItem entity = menuItemMapper.toEntity(request);
         entity.setAvailable(true);
@@ -31,6 +34,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
         return menuItemMapper.toDTO(saved);
     }
 @Override
+@Transactional
     public MenuItem updateMenuItem(Long id, @Valid MenuItemRequest request, String username) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new MenuItemNotFoundException("Menu item not found"));
@@ -39,6 +43,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
         return menuItemRepository.save(menuItem);
     }
     @Override
+    @Transactional
     public void deleteMenuItem(Long id, String username) {
         if (!menuItemRepository.existsById(id)) {
             throw new MenuItemNotFoundException("Menu item not found");
@@ -46,6 +51,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
         menuItemRepository.deleteById(id);
     }
 @Override
+@Transactional
     public MenuItem toggleAvailability(Long id, boolean available, String username) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new MenuItemNotFoundException("Menu item not found"));
@@ -76,6 +82,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
                 .collect(Collectors.toList());
     }
 @Override
+@Transactional
     public List<MenuItem> bulkUpdateAvailability(List<com.example.foodordersystem.controller.AdminMenuController.BulkAvailabilityRequest> requests,
                                                  String username) {
         List<Long> ids = requests.stream().map(r -> r.getId()).toList();

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.example.foodordersystem.model.entity.User.Role.CUSTOMER;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
    private final PasswordEncoder passwordEncoder;
@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User registerUser(RegisterRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("Parollar uyğun gəlmir");
