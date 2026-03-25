@@ -18,6 +18,7 @@ public class MenuItem {
     private String name;
     @Column(columnDefinition = "TEXT")
     private String description;
+    @Column(precision = 10, scale = 2)
     private BigDecimal price;
     private String category;
     private boolean available = true;

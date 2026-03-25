@@ -27,6 +27,7 @@ public class MenuItemRequest {
     @NotNull(message = "Qiymət boş ola bilməz")
     @DecimalMin(value = "0.01", message = "Qiymət 0.01-dən böyük olmalıdır")
     @DecimalMax(value = "999.99", message = "Qiymət 999.99-dan kiçik olmalıdır")
+    @Digits(integer = 8, fraction = 2, message = "Qiymət maksimum 2 onluq rəqəm ola bilər")
     @Schema(description = "Menyu maddəsinin qiyməti", example = "12.99")
     private BigDecimal price;
 
