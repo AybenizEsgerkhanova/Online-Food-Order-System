@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/menu")
-@CrossOrigin(origins = "*")
 public class MenuController {
 
     private final MenuServiceImpl menuService;

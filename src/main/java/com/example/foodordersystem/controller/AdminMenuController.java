@@ -30,7 +30,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/menu")
-@CrossOrigin(origins = "*")
 @Tag(name = "Admin Menu Management", description = "Admin mənyunu idarə etmək üçün endpoint-lər")
 @SecurityRequirement(name = "Bearer Authentication")
 public class AdminMenuController {
