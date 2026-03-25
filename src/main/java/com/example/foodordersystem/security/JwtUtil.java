@@ -1,8 +1,8 @@
 package com.example.foodordersystem.security;
 
-import ch.qos.logback.classic.Logger;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
     @Value("${jwt.secret}")
@@ -22,8 +23,6 @@ public class JwtUtil {
 
     @Value("${jwt.expiration}")
     private Long expiration;
-
-    private static final Logger log = (Logger) org.slf4j.LoggerFactory.getLogger(JwtUtil.class);
 
     private SecretKey getSigningKey() {
         // Secret key-in düzgün base64 formatda olduğuna əmin olun
