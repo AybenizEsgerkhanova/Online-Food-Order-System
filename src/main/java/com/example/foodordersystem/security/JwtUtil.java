@@ -24,14 +24,13 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    private SecretKey signingKey;
+
     private SecretKey getSigningKey() {
-        // Secret key-in düzgün base64 formatda olduğuna əmin olun
-        try {
-            byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
-            return Keys.hmacShaKeyFor(keyBytes);
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid secret key format", e);
+        if (signingKey == null) {
+            signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         }
+        return signingKey;
     }
 
     public String generateToken(UserDetails userDetails) {
