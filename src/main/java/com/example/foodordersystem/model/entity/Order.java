@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -41,7 +43,21 @@ public class Order {
     }
 
     public enum OrderStatus {
-        PENDING, CONFIRMED, PREPARING, READY, DELIVERED, CANCELLED
+        PENDING, CONFIRMED, PREPARING, READY, DELIVERED, CANCELLED;
+
+
+        private static final Map<OrderStatus, Set<OrderStatus>> ALLOWED_TRANSITIONS = Map.of(
+                PENDING,    Set.of(CONFIRMED, CANCELLED),
+                CONFIRMED,  Set.of(PREPARING, CANCELLED),
+                PREPARING,  Set.of(READY, CANCELLED),
+                READY,      Set.of(DELIVERED),
+                DELIVERED,  Set.of(),
+                CANCELLED,  Set.of()
+        );
+
+        public boolean canTransitionTo(OrderStatus target) {
+            return ALLOWED_TRANSITIONS.getOrDefault(this, Set.of()).contains(target);
+        }
     }
     public Order() {
         this.orderDate = LocalDateTime.now();

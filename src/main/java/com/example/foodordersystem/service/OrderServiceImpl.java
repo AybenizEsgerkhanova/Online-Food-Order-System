@@ -1,6 +1,7 @@
 package com.example.foodordersystem.service;
 
 import ch.qos.logback.classic.Logger;
+import com.example.foodordersystem.exception.InvalidOrderStatusException;
 import com.example.foodordersystem.mapper.OrderMapper;
 import com.example.foodordersystem.model.dto.request.OrderRequest;
 import com.example.foodordersystem.model.dto.response.OrderResponse;
@@ -108,6 +109,9 @@ public class OrderServiceImpl implements OrderService {
 
         try {
             Order.OrderStatus newStatus = Order.OrderStatus.valueOf(status.toUpperCase());
+            if (!order.getStatus().canTransitionTo(newStatus)) {
+                throw new InvalidOrderStatusException(order.getStatus() + " → " + newStatus + " keçidi mümkün deyil.");
+            }
             order.setStatus(newStatus);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid order status: " + status);
