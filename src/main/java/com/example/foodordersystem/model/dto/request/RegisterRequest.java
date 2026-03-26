@@ -36,7 +36,6 @@ public class RegisterRequest {
     @Schema(description = "İstifadəçi rolu", example = "CUSTOMER", defaultValue = "CUSTOMER")
     private String role = "CUSTOMER";
 
-    // Custom validation üçün əlavə field-lər
     @Schema(description = "Parolu təsdiqləmək", example = "MyPassword123")
     private String confirmPassword;
 
