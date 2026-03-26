@@ -62,7 +62,6 @@ public class Order {
         calculateTotalAmount();
     }
 
-    // Remove order item method
     public void removeOrderItem(OrderItem orderItem) {
         if (orderItems != null) {
             orderItems.remove(orderItem);
@@ -71,7 +70,6 @@ public class Order {
         }
     }
 
-    // Calculate total amount
     public void calculateTotalAmount() {
         if (orderItems == null || orderItems.isEmpty()) {
             this.totalAmount = BigDecimal.ZERO;
@@ -88,7 +86,6 @@ public class Order {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Convenience method to add menu item directly
     public OrderItem addMenuItem(MenuItem menuItem, int quantity) {
         OrderItem orderItem = new OrderItem(menuItem, quantity);
         addOrderItem(orderItem);
