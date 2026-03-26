@@ -1,6 +1,7 @@
 package com.example.foodordersystem.service;
 
 import ch.qos.logback.classic.Logger;
+import com.example.foodordersystem.exception.InvalidOrderStatusException;
 import com.example.foodordersystem.mapper.OrderMapper;
 import com.example.foodordersystem.model.dto.request.OrderRequest;
 import com.example.foodordersystem.model.dto.response.OrderResponse;
@@ -16,9 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
     private static final Logger logger = (Logger) LoggerFactory.getLogger(OrderServiceImpl.class);
@@ -39,7 +41,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse createOrder(OrderRequest orderRequest, String username) {
+    @Transactional
+    public OrderResponse createOrder(OrderRequest orderRequest, String username, String idempotencyKey) {
+
+        if (idempotencyKey != null) {
+            Optional<Order> existing = orderRepository.findByIdempotencyKey(idempotencyKey);
+            if (existing.isPresent()) {
+                return orderMapper.toResponse(existing.get());
+            }
+        }
+
         if (orderRequest.getOrderItems() == null || orderRequest.getOrderItems().isEmpty()) {
             throw new RuntimeException("Order must contain at least one item");
         }
@@ -95,6 +106,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderResponse updateOrderStatus(Long id, String status, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -108,6 +120,9 @@ public class OrderServiceImpl implements OrderService {
 
         try {
             Order.OrderStatus newStatus = Order.OrderStatus.valueOf(status.toUpperCase());
+            if (!order.getStatus().canTransitionTo(newStatus)) {
+                throw new InvalidOrderStatusException(order.getStatus() + " → " + newStatus + " keçidi mümkün deyil.");
+            }
             order.setStatus(newStatus);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid order status: " + status);

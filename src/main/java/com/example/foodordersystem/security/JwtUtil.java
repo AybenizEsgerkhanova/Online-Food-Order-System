@@ -1,8 +1,8 @@
 package com.example.foodordersystem.security;
 
-import ch.qos.logback.classic.Logger;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
     @Value("${jwt.secret}")
@@ -23,16 +24,13 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    private static final Logger log = (Logger) org.slf4j.LoggerFactory.getLogger(JwtUtil.class);
+    private SecretKey signingKey;
 
     private SecretKey getSigningKey() {
-        // Secret key-in düzgün base64 formatda olduğuna əmin olun
-        try {
-            byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
-            return Keys.hmacShaKeyFor(keyBytes);
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid secret key format", e);
+        if (signingKey == null) {
+            signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         }
+        return signingKey;
     }
 
     public String generateToken(UserDetails userDetails) {

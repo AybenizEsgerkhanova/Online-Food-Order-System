@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class MenuServiceImpl implements MenuService {
     private final MenuItemRepository menuItemRepository;
     public MenuServiceImpl(MenuItemRepository menuItemRepository) {

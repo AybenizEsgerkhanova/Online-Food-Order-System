@@ -1,7 +1,7 @@
 package com.example.foodordersystem.controller;
 
 import com.example.foodordersystem.model.entity.MenuItem;
-import com.example.foodordersystem.service.MenuServiceImpl;
+import com.example.foodordersystem.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,12 +19,11 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/menu")
-@CrossOrigin(origins = "*")
 public class MenuController {
 
-    private final MenuServiceImpl menuService;
+    private final MenuService menuService;
 
-    public MenuController(MenuServiceImpl menuService) {
+    public MenuController(MenuService menuService) {
         this.menuService = menuService;
     }
 

@@ -2,7 +2,7 @@ package com.example.foodordersystem.controller;
 
 import com.example.foodordersystem.model.dto.request.OrderRequest;
 import com.example.foodordersystem.model.dto.response.OrderResponse;
-import com.example.foodordersystem.service.OrderServiceImpl;
+import com.example.foodordersystem.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,22 +16,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "*")
 public class OrderController {
 
-    private final OrderServiceImpl orderService;
+    private final OrderService orderService;
 
-    public OrderController(OrderServiceImpl orderService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<OrderResponse> createOrder(
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
             @Valid @RequestBody OrderRequest orderRequest,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        OrderResponse order = orderService.createOrder(orderRequest, userDetails.getUsername());
+        OrderResponse order = orderService.createOrder(orderRequest, userDetails.getUsername(), idempotencyKey);
         return ResponseEntity.ok(order);
     }
 

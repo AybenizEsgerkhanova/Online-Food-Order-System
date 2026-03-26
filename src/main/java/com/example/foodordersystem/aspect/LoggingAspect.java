@@ -76,13 +76,5 @@ public class LoggingAspect {
         }
     }
 
-    @AfterThrowing(pointcut = "controllerMethods() || serviceMethods()", throwing = "ex")
-    public void logException(JoinPoint joinPoint, Throwable ex) {
-        String className = joinPoint.getSignature().getDeclaringTypeName();
-        String methodName = joinPoint.getSignature().getName();
-
-        log.error("Exception thrown in {}.{}: {} - {}",
-                className, methodName, ex.getClass().getSimpleName(), ex.getMessage());
-    }
 }
 

@@ -11,8 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.foodordersystem.model.entity.User.Role.CUSTOMER;
+
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
    private final PasswordEncoder passwordEncoder;
@@ -22,6 +24,7 @@ public class UserServiceImpl implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User registerUser(RegisterRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("Parollar uyğun gəlmir");
@@ -33,20 +36,11 @@ public class UserServiceImpl implements UserDetailsService {
             throw new RuntimeException("Email artıq mövcuddur");
         }
 
-
-        User.Role role;
-        try {
-            role = User.Role.valueOf(request.getRole().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Rol yalnız CUSTOMER, STAFF və ya ADMIN ola bilər");
-        }
-
-
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(role);
+        user.setRole(CUSTOMER);
 
         return userRepository.save(user);
     }

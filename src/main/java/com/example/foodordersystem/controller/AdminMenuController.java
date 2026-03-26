@@ -4,7 +4,7 @@ import com.example.foodordersystem.model.dto.MenuItemDTO;
 import com.example.foodordersystem.model.dto.request.MenuItemRequest;
 import com.example.foodordersystem.model.dto.response.ErrorResponse;
 import com.example.foodordersystem.model.entity.MenuItem;
-import com.example.foodordersystem.service.AdminMenuServiceImpl;
+import com.example.foodordersystem.service.AdminMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,14 +30,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/menu")
-@CrossOrigin(origins = "*")
 @Tag(name = "Admin Menu Management", description = "Admin mənyunu idarə etmək üçün endpoint-lər")
 @SecurityRequirement(name = "Bearer Authentication")
 public class AdminMenuController {
 
-    private final AdminMenuServiceImpl adminMenuService;
+    private final AdminMenuService adminMenuService;
 
-    public AdminMenuController(AdminMenuServiceImpl adminMenuService) {
+    public AdminMenuController(AdminMenuService adminMenuService) {
         this.adminMenuService = adminMenuService;
     }
 

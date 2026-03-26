@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    OrderResponse createOrder(OrderRequest orderRequest, String username);
+    OrderResponse createOrder(OrderRequest orderRequest, String username, String idempotencyKey);
     OrderResponse getOrderById(Long id, String username);
     List<OrderResponse> getUserOrders(String username);
     OrderResponse updateOrderStatus(Long id, String status, String username);

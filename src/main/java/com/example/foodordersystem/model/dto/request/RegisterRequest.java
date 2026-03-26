@@ -32,10 +32,6 @@ public class RegisterRequest {
     @Schema(description = "Email ünvanı", example = "john@example.com", required = true)
     private String email;
 
-    @Pattern(regexp = "^(CUSTOMER|STAFF|ADMIN)$", message = "Rol yalnız CUSTOMER, STAFF və ya ADMIN ola bilər")
-    @Schema(description = "İstifadəçi rolu", example = "CUSTOMER", defaultValue = "CUSTOMER")
-    private String role = "CUSTOMER";
-
     // Custom validation üçün əlavə field-lər
     @Schema(description = "Parolu təsdiqləmək", example = "MyPassword123")
     private String confirmPassword;
