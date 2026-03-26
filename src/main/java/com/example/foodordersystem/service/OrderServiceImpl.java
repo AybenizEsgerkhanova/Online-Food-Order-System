@@ -98,10 +98,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getUserOrders(String username) {
+    public List<OrderResponse> getOrders(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
+        if (user.getRole() != User.Role.CUSTOMER) {
+            return orderMapper.toResponseList(orderRepository.findAllOrderByOrderDateDesc());
+        }
         return orderMapper.toResponseList(orderRepository.findByUserId(user.getId()));
     }
 
@@ -132,15 +134,4 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toResponse(updatedOrder);
     }
 
-    @Override
-    public List<OrderResponse> getAllOrders(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (user.getRole() == User.Role.CUSTOMER) {
-            throw new RuntimeException("Access denied");
-        }
-
-        return orderMapper.toResponseList(orderRepository.findAllOrderByOrderDateDesc());
-    }
 }

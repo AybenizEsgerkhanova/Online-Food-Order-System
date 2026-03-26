@@ -1,21 +1,20 @@
 package com.example.foodordersystem.controller;
 
 import com.example.foodordersystem.model.dto.request.OrderRequest;
+import com.example.foodordersystem.model.dto.request.StatusUpdateRequest;
 import com.example.foodordersystem.model.dto.response.OrderResponse;
 import com.example.foodordersystem.service.OrderService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 
-
-@RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/v1/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -32,7 +31,7 @@ public class OrderController {
             @AuthenticationPrincipal UserDetails userDetails) {
 
         OrderResponse order = orderService.createOrder(orderRequest, userDetails.getUsername(), idempotencyKey);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     @GetMapping("/{id}")
@@ -43,22 +42,17 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderResponse> getUserOrders(@AuthenticationPrincipal UserDetails userDetails) {
-        return orderService.getUserOrders(userDetails.getUsername());
+    public List<OrderResponse> getOrders(@AuthenticationPrincipal UserDetails userDetails) {
+        return orderService.getOrders(userDetails.getUsername());
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<OrderResponse> updateOrderStatus(
             @PathVariable Long id,
-            @RequestParam String status,
+            @RequestBody StatusUpdateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        OrderResponse order = orderService.updateOrderStatus(id, status, userDetails.getUsername());
+        OrderResponse order = orderService.updateOrderStatus(id, request.getStatus(), userDetails.getUsername());
         return ResponseEntity.ok(order);
-    }
-
-    @GetMapping("/all")
-    public List<OrderResponse> getAllOrders(@AuthenticationPrincipal UserDetails userDetails) {
-        return orderService.getAllOrders(userDetails.getUsername());
     }
 }

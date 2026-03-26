@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/api/v1/menu")
 public class MenuController {
 
     private final MenuService menuService;

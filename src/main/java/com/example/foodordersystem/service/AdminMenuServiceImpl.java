@@ -3,6 +3,7 @@ package com.example.foodordersystem.service;
 import com.example.foodordersystem.exception.MenuItemNotFoundException;
 import com.example.foodordersystem.mapper.MenuItemMapper;
 import com.example.foodordersystem.model.dto.MenuItemDTO;
+import com.example.foodordersystem.model.dto.request.BulkAvailabilityRequest;
 import com.example.foodordersystem.model.dto.request.MenuItemRequest;
 import com.example.foodordersystem.model.entity.MenuItem;
 import com.example.foodordersystem.repository.MenuItemRepository;
@@ -77,10 +78,9 @@ public class AdminMenuServiceImpl implements AdminMenuService{
     public List<String> getAllCategories() {
         return menuItemRepository.findAllCategories();
     }
-@Override
+
 @Transactional
-    public List<MenuItem> bulkUpdateAvailability(List<com.example.foodordersystem.controller.AdminMenuController.BulkAvailabilityRequest> requests,
-                                                 String username) {
+    public List<MenuItem> bulkUpdateAvailability(List<BulkAvailabilityRequest> requests, String username) {
         List<Long> ids = requests.stream().map(r -> r.getId()).toList();
         List<MenuItem> items = menuItemRepository.findAllById(ids);
 

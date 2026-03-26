@@ -1,6 +1,7 @@
 package com.example.foodordersystem.service;
 
 import com.example.foodordersystem.model.dto.MenuItemDTO;
+import com.example.foodordersystem.model.dto.request.BulkAvailabilityRequest;
 import com.example.foodordersystem.model.dto.request.MenuItemRequest;
 import com.example.foodordersystem.model.entity.MenuItem;
 import org.springframework.data.domain.Page;
@@ -23,8 +24,5 @@ public interface AdminMenuService {
 
     List<String> getAllCategories();
 
-    List<MenuItem> bulkUpdateAvailability(
-            List<com.example.foodordersystem.controller.AdminMenuController.BulkAvailabilityRequest> requests,
-            String username
-    );
+    List<MenuItem> bulkUpdateAvailability(List<BulkAvailabilityRequest> requests, String username);
 }

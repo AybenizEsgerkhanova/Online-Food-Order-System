@@ -22,7 +22,7 @@ import com.example.foodordersystem.model.dto.response.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Qeydiyyat və giriş endpoint-ləri")
 public class AuthController {
 

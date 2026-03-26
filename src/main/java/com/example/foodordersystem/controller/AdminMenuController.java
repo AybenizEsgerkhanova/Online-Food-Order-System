@@ -13,8 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.foodordersystem.model.dto.request.AvailabilityRequest;
+import com.example.foodordersystem.model.dto.request.BulkAvailabilityRequest;
 import jakarta.validation.Valid;
-import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/menu")
+@RequestMapping("/api/v1/admin/menu")
 @Tag(name = "Admin Menu Management", description = "Admin mənyunu idarə etmək üçün endpoint-lər")
 @SecurityRequirement(name = "Bearer Authentication")
 public class AdminMenuController {
@@ -111,10 +112,10 @@ public class AdminMenuController {
     })
     public ResponseEntity<MenuItem> toggleAvailability(
             @PathVariable @Parameter(description = "Menyu maddəsi ID-si") Long id,
-            @RequestParam @Parameter(description = "Yeni mövcudluq statusu") boolean available,
+            @RequestBody @Parameter(description = "Yeni mövcudluq statusu") AvailabilityRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        MenuItem updatedItem = adminMenuService.toggleAvailability(id, available, userDetails.getUsername());
+        MenuItem updatedItem = adminMenuService.toggleAvailability(id, request.isAvailable(), userDetails.getUsername());
         return ResponseEntity.ok(updatedItem);
     }
 
@@ -163,10 +164,5 @@ public class AdminMenuController {
         return ResponseEntity.ok(updatedItems);
     }
 
-    @Data
-    public static class BulkAvailabilityRequest {
-        private Long id;
-        private boolean available;
-    }
 }
 
