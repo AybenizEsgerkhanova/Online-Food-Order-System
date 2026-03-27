@@ -10,6 +10,8 @@ import com.example.foodordersystem.repository.MenuItemRepository;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
     }
 @Override
 @Transactional
+@CacheEvict(value = "categories", allEntries = true)
     public MenuItemDTO createMenuItem(@Valid MenuItemRequest request, String username) {
         MenuItem entity = menuItemMapper.toEntity(request);
         entity.setAvailable(true);
@@ -36,6 +39,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
     }
 @Override
 @Transactional
+@CacheEvict(value = {"categories", "menuItems"}, allEntries = true)
     public MenuItem updateMenuItem(Long id, @Valid MenuItemRequest request, String username) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new MenuItemNotFoundException("Menu item not found"));
@@ -45,6 +49,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
     }
     @Override
     @Transactional
+    @CacheEvict(value = {"categories", "menuItems"}, allEntries = true)
     public void deleteMenuItem(Long id, String username) {
         if (!menuItemRepository.existsById(id)) {
             throw new MenuItemNotFoundException("Menu item not found");
@@ -53,6 +58,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
     }
 @Override
 @Transactional
+@CacheEvict(value = "menuItems", allEntries = true)
     public MenuItem toggleAvailability(Long id, boolean available, String username) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new MenuItemNotFoundException("Menu item not found"));
@@ -75,6 +81,7 @@ public class AdminMenuServiceImpl implements AdminMenuService{
         return menuItemRepository.findAll(pageable);
     }
 @Override
+@Cacheable("categories")
     public List<String> getAllCategories() {
         return menuItemRepository.findAllCategories();
     }

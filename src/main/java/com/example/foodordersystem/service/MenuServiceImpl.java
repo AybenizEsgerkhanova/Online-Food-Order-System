@@ -4,6 +4,7 @@ import com.example.foodordersystem.model.entity.MenuItem;
 import com.example.foodordersystem.repository.MenuItemRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,7 @@ public class MenuServiceImpl implements MenuService {
         return menuItemRepository.findByAvailableTrue(pageable);
     }
 @Override
+@Cacheable(value = "menuItems", key = "#id")
     public MenuItem getMenuItemById(Long id) {
         return menuItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Menu item not found"));
