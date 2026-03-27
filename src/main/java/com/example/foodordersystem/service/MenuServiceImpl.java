@@ -4,6 +4,7 @@ import com.example.foodordersystem.exception.MenuItemNotFoundException;
 import com.example.foodordersystem.model.entity.MenuItem;
 import com.example.foodordersystem.repository.MenuItemRepository;
 import com.example.foodordersystem.util.MessageUtil;
+import com.example.foodordersystem.specification.MenuItemSpec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,19 +27,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Page<MenuItem> getAllMenuItems(Pageable pageable, String category,
                                           BigDecimal minPrice, BigDecimal maxPrice, String search) {
-        if (search != null && !search.trim().isEmpty()) {
-            return menuItemRepository.findBySearchCriteria(search, pageable);
-        }
-        if (category != null && minPrice != null && maxPrice != null) {
-            return menuItemRepository.findByCategoryAndPriceRange(category, minPrice, maxPrice, pageable);
-        }
-        if (category != null) {
-            return menuItemRepository.findByCategoryAndAvailableTrue(category, pageable);
-        }
-        if (minPrice != null && maxPrice != null) {
-            return menuItemRepository.findByPriceRangeAndAvailableTrue(minPrice, maxPrice, pageable);
-        }
-        return menuItemRepository.findByAvailableTrue(pageable);
+        return menuItemRepository.findAll(MenuItemSpec.withFilters(category, minPrice, maxPrice, search), pageable);
     }
 
 @Override
