@@ -4,6 +4,7 @@ import com.example.foodordersystem.exception.UserNotFoundException;
 import com.example.foodordersystem.model.dto.request.RegisterRequest;
 import com.example.foodordersystem.model.entity.User;
 import com.example.foodordersystem.repository.UserRepository;
+import com.example.foodordersystem.util.MessageUtil;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,8 +17,9 @@ import static com.example.foodordersystem.model.entity.User.Role.CUSTOMER;
 @Service
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserDetailsService {
+
     private final UserRepository userRepository;
-   private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -27,13 +29,13 @@ public class UserServiceImpl implements UserDetailsService {
     @Transactional
     public User registerUser(RegisterRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new IllegalArgumentException("Parollar uyğun gəlmir");
+            throw new IllegalArgumentException(MessageUtil.get("error.passwords.not.match"));
         }
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username artıq mövcuddur");
+            throw new RuntimeException(MessageUtil.get("error.username.exists"));
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email artıq mövcuddur");
+            throw new RuntimeException(MessageUtil.get("error.email.exists"));
         }
 
         User user = new User();
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return user;
     }
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
